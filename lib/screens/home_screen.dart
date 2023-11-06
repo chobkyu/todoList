@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/complete_todo.dart';
+import 'package:todolist/screens/create_todo.dart';
+import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/button.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -35,7 +38,25 @@ class HomeScreen extends StatelessWidget {
                 Button(
                   text: 'todolist',
                   move: () {
-                    print('list page');
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          var begin = const Offset(0.0, 1.0);
+                          var end = Offset.zero;
+                          var curve = Curves.ease;
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const TodoList(),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(
@@ -44,7 +65,25 @@ class HomeScreen extends StatelessWidget {
                 Button(
                   text: 'make to do',
                   move: () {
-                    print('make to do');
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          var begin = const Offset(0.0, 1.0);
+                          var end = Offset.zero;
+                          var curve = Curves.ease;
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const CreateToDo(),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(
@@ -53,7 +92,26 @@ class HomeScreen extends StatelessWidget {
                 Button(
                     text: 'complete',
                     move: () {
-                      print('complete page');
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(0.0, 1.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  const CompleteTodo(),
+                        ),
+                      );
                     })
               ],
             ),
