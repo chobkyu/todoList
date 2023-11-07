@@ -17,12 +17,17 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('Hello flutter!'),
-        // ),
-        body: HomeScreen(),
+    return GestureDetector(
+      onTap: (){
+        FocusManager.instance.primaryFocus?.unfocus(); // 키보드 닫기 이벤트
+      },
+      child: const MaterialApp(
+        home: Scaffold(
+          // appBar: AppBar(
+          //   title: const Text('Hello flutter!'),
+          // ),
+          body: HomeScreen(),
+        ),
       ),
     );
   }

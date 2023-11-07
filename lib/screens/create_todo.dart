@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/home_screen.dart';
 import 'package:todolist/service/CreateTodoService.dart';
 import 'package:todolist/widgets/textStr.dart';
 
@@ -41,7 +42,11 @@ class _CreateToDoState extends State<CreateToDo> {
         actions: <Widget>[
           BackButton(
             onPressed: (){
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context){
+                    return HomeScreen();
+                  }));
             },
           )
         ],
