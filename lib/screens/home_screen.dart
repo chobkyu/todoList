@@ -4,6 +4,8 @@ import 'package:todolist/screens/create_todo.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/button.dart';
 
+import '../widgets/customAppBar.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -11,17 +13,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
-      appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'To Do list',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        backgroundColor: Colors.black,
-        centerTitle: true,
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child:  CustomAppBar(title: 'To Do List'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

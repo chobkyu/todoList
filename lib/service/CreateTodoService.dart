@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 class CreateTodoService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -14,6 +15,8 @@ class CreateTodoService {
       "todo": todo,
       "detail": detail,
       "dateTime": dateTime,
+      "doIt":false,
     });
   }
+
 }

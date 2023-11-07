@@ -3,6 +3,8 @@ import 'package:todolist/screens/home_screen.dart';
 import 'package:todolist/service/CreateTodoService.dart';
 import 'package:todolist/widgets/textStr.dart';
 
+import '../widgets/customAppBar.dart';
+
 class CreateToDo extends StatefulWidget {
   const CreateToDo({super.key});
 
@@ -45,7 +47,7 @@ class _CreateToDoState extends State<CreateToDo> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context){
-                    return HomeScreen();
+                    return const HomeScreen();
                   }));
             },
           )
@@ -58,13 +60,9 @@ class _CreateToDoState extends State<CreateToDo> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
-      appBar: AppBar(
-        title: const Text(
-          'Create',
-          style: TextStyle(fontWeight: FontWeight.w700),
-        ),
-        backgroundColor: Colors.black,
-        centerTitle: true,
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child:  CustomAppBar(title: 'Create'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
