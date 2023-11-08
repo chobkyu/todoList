@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/detail_page.dart';
 import 'package:todolist/service/CreateTodoService.dart';
 import 'package:todolist/service/GetListService.dart';
 import 'package:todolist/widgets/customAppBar.dart';
@@ -17,12 +18,33 @@ class _TodoListState extends State<TodoList> {
   Query<Map<String, dynamic>> todolist = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: false);
 
   void detailPage() {
-
+      Navigator.push(
+          context,
+          PageRouteBuilder(
+          transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+          var begin = const Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) =>
+        const DetailPage(),
+        )
+    );
   }
 
-  Future<void> updateDoIt(String uid) async {
-    return await FirebaseFirestore.instance.collection('todo').doc(uid).set(
+  Future<void> updateDoIt(DocumentSnapshot snapshot) async {
+    return await FirebaseFirestore.instance.collection('todo').doc(snapshot.id).set(
         {
+          'todo':snapshot['todo'],
+          'detail':snapshot['detail'],
+          'dateTime':snapshot['dateTime'],
           'doIt':true,
         }
     );
@@ -86,7 +108,7 @@ class _TodoListState extends State<TodoList> {
                           ),
                           ElevatedButton(
                               onPressed: (){
-                                updateDoIt(documentSnapShot.id);
+                                updateDoIt(documentSnapShot);
                               },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color.fromARGB(255, 51, 50, 50),
