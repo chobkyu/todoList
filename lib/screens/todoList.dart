@@ -16,6 +16,10 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   CollectionReference todolist = FirebaseFirestore.instance.collection('todo');
 
+  void detailPage() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,22 +38,62 @@ class _TodoListState extends State<TodoList> {
                 itemBuilder: (context, index) {
                   final DocumentSnapshot documentSnapShot =
                   streamSnapshot.data!.docs[index];
+
+                  Timestamp stamp = documentSnapShot['dateTime'];
+                  DateTime date = stamp.toDate();
+
                   return Card(
                     color: Colors.black,
                     child: ListTile(
+                      onTap: detailPage,
                       title: Text(
                         documentSnapShot['todo'],
-                        style: const TextStyle(color: Colors.white),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900
+                        ),
                       ),
-                      subtitle: Text(
-                          documentSnapShot['detail'],
-                          style: const TextStyle(color: Colors.white),
+                      subtitle: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            textBaseline: TextBaseline.alphabetic,
+                            children: [
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                  documentSnapShot['detail'],
+                                  style: const TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                date.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+
+                          ),
+                          const SizedBox(
+                            width: 110,
+                          ),
+                          ElevatedButton(
+                              onPressed: (){},
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 51, 50, 50),
+                                  elevation: 1
+                              ),
+                              child: const Text(
+                                  'Do it?'
+                              ),
+                          ),
+                        ],
                       ),
+
                     ),
                   );
                 });
           }
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         },
       ),
     );
