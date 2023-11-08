@@ -17,7 +17,7 @@ class TodoList extends StatefulWidget {
 class _TodoListState extends State<TodoList> {
   Query<Map<String, dynamic>> todolist = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: false);
 
-  void detailPage() {
+  void detailPage(DocumentSnapshot snapshot) {
       Navigator.push(
           context,
           PageRouteBuilder(
@@ -34,7 +34,7 @@ class _TodoListState extends State<TodoList> {
           );
         },
         pageBuilder: (context, animation, secondaryAnimation) =>
-        const DetailPage(),
+        DetailPage(snapshot:snapshot),
         )
     );
   }
@@ -75,7 +75,7 @@ class _TodoListState extends State<TodoList> {
                   return Card(
                     color: Colors.black,
                     child: ListTile(
-                      onTap: detailPage,
+                      onTap: (){detailPage(documentSnapShot);},
                       title: Text(
                         documentSnapShot['todo'],
                         style: const TextStyle(

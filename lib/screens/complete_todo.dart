@@ -15,7 +15,7 @@ class _CompleteTodoState extends State<CompleteTodo> {
 
   Query<Map<String, dynamic>> completeList = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: true);
 
-  void detailPage() {
+  void detailPage(DocumentSnapshot snapshot) {
     Navigator.push(
         context,
         PageRouteBuilder(
@@ -32,7 +32,7 @@ class _CompleteTodoState extends State<CompleteTodo> {
             );
           },
           pageBuilder: (context, animation, secondaryAnimation) =>
-          const DetailPage(),
+          DetailPage(snapshot: snapshot),
         )
     );
   }
