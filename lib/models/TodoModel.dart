@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ToDoModel{
   final String todo,detail,id;
-  final DateTime dateTime;
+  final Timestamp dateTime;
   final bool doIt;
 
   ToDoModel.fromJson(Map<String,dynamic> json)
