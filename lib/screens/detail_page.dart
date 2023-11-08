@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/customAppBar.dart';
+
+import 'home_screen.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key,required this.snapshot});
@@ -17,6 +20,37 @@ class _DetailPageState extends State<DetailPage> {
     return date.toString();
   }
 
+  Future<void> updateDoIt(DocumentSnapshot snapshot) async {
+    await FirebaseFirestore.instance.collection('todo').doc(snapshot.id).set(
+        {
+          'todo':snapshot['todo'],
+          'detail':snapshot['detail'],
+          'dateTime':snapshot['dateTime'],
+          'doIt':true,
+        }
+    );
+    _showDialog();
+  }
+
+  void _showDialog(){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text('Alert'),
+        content: const Text("Complete"),
+        actions: <Widget>[
+          BackButton(
+            onPressed: (){
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context){
+                    return const TodoList();
+                  }));
+            },
+          )
+        ],
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,6 +106,21 @@ class _DetailPageState extends State<DetailPage> {
                     color: Colors.white,
                     fontSize: 20
                 ),
+              ),
+            ),
+            const SizedBox(
+              width: 110,
+            ),
+            ElevatedButton(
+              onPressed: (){
+                updateDoIt(widget.snapshot!);
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  elevation: 1
+              ),
+              child: const Text(
+                  'Do it?'
               ),
             ),
           ],
