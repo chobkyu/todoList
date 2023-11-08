@@ -14,10 +14,18 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  CollectionReference todolist = FirebaseFirestore.instance.collection('todo');
+  Query<Map<String, dynamic>> todolist = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: false);
 
   void detailPage() {
 
+  }
+
+  Future<void> updateDoIt(String uid) async {
+    return await FirebaseFirestore.instance.collection('todo').doc(uid).set(
+        {
+          'doIt':true,
+        }
+    );
   }
 
   @override
@@ -77,7 +85,9 @@ class _TodoListState extends State<TodoList> {
                             width: 110,
                           ),
                           ElevatedButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                updateDoIt(documentSnapShot.id);
+                              },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color.fromARGB(255, 51, 50, 50),
                                   elevation: 1
