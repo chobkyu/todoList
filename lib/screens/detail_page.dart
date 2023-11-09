@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/todoList.dart';
+import 'package:todolist/screens/update_detail.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
 import 'home_screen.dart';
@@ -51,6 +52,29 @@ class _DetailPageState extends State<DetailPage> {
       );
     });
   }
+
+  void updatePage(DocumentSnapshot snapshot){
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionsBuilder:
+              (context, animation, secondaryAnimation, child) {
+            var begin = const Offset(0.0, 1.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end)
+                .chain(CurveTween(curve: curve));
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              UpdateDetail(snapshot: snapshot),
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,18 +135,41 @@ class _DetailPageState extends State<DetailPage> {
             const SizedBox(
               width: 110,
             ),
-            ElevatedButton(
-              onPressed: (){
-                updateDoIt(widget.snapshot!);
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  elevation: 1
-              ),
-              child: const Text(
-                  'Do it?'
-              ),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 100,
+                ),
+                ElevatedButton(
+                  onPressed: (){
+                    updateDoIt(widget.snapshot!);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      elevation: 1
+                  ),
+                  child: const Text(
+                      'Do it?'
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                  onPressed: (){
+                    updatePage(widget.snapshot!);
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      elevation: 1
+                  ),
+                  child: const Text(
+                      'update'
+                  ),
+                ),
+              ],
             ),
+
           ],
         ),
       )

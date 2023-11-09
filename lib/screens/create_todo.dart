@@ -48,7 +48,9 @@ class _CreateToDoState extends State<CreateToDo> {
                   context,
                   MaterialPageRoute(builder: (context){
                     return const HomeScreen();
-                  }));
+                  },
+                ),
+              );
             },
           )
         ],
@@ -117,7 +119,8 @@ class _CreateToDoState extends State<CreateToDo> {
                   style: TextStyle(
                     color:Colors.white,
                   ),
-                ))
+                ),
+            ),
           ],
         ),
       ),
