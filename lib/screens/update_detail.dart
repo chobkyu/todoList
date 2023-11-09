@@ -37,7 +37,7 @@ class _UpdateDetailState extends State<UpdateDetail> {
 
   }
 
-  Future<void> updateDoIt( id) async {
+  Future<void> updateDoIt(id) async {
     return await FirebaseFirestore.instance.collection('todo').doc(id).set(
         {
           'todo':todo,
@@ -48,9 +48,17 @@ class _UpdateDetailState extends State<UpdateDetail> {
     );
   }
 
-  String getDate(Timestamp stamp){
-    DateTime date = stamp.toDate();
-    return date.toString();
+  String getDate(stamp){
+    print(dateTime);
+
+    if(dateTime!=null){
+      print(dateTime);
+      return dateTime.toString();
+    }else{
+      DateTime date = stamp.toDate();
+      return date.toString();
+    }
+
   }
 
   void _showDialog(){
@@ -65,7 +73,9 @@ class _UpdateDetailState extends State<UpdateDetail> {
                   context,
                   MaterialPageRoute(builder: (context){
                     return const TodoList();
-                  }));
+                  },
+                ),
+              );
             },
           )
         ],
@@ -108,8 +118,8 @@ class _UpdateDetailState extends State<UpdateDetail> {
             ),
             UpdateTextStr(
               fontSizeNum: 18,
-              text: getDate(widget.snapshot?.get('dateTime')),
-              getStr : getDetail,
+              text: dateTime == null? getDate(widget.snapshot?.get('dateTime')):dateTime.toString(),
+              getStr : (){},
               maxLine: 1,
             ),
             ElevatedButton(onPressed:(){
@@ -120,6 +130,7 @@ class _UpdateDetailState extends State<UpdateDetail> {
                 lastDate: DateTime(2090),
               ).then((selectedDate) => setState((){
                 dateTime = selectedDate;
+                getDate(dateTime);
               }));},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
