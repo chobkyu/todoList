@@ -117,7 +117,8 @@ class _CreateToDoState extends State<CreateToDo> {
                   style: TextStyle(
                     color:Colors.white,
                   ),
-                ))
+                ),
+            ),
           ],
         ),
       ),
