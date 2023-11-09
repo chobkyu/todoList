@@ -92,9 +92,15 @@ class _TodoListState extends State<TodoList> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text(
+                              SizedBox(
+                                width:200,
+                                child: Text(
                                   documentSnapShot['detail'],
                                   style: const TextStyle(color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                ),
                               ),
                               Text(
                                 date.toString(),
@@ -104,7 +110,7 @@ class _TodoListState extends State<TodoList> {
 
                           ),
                           const SizedBox(
-                            width: 110,
+                            width: 70,
                           ),
                           ElevatedButton(
                               onPressed: (){
