@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _authentication = FirebaseAuth.instance;
   User? loggedUser;
+  bool isLogin = false;
 
   @override
   void initState() {
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final user = _authentication.currentUser;
       if(user != null){
         loggedUser = user;
+        isLogin = true;
       }
     }catch(err){
       print(err);
@@ -140,6 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 10,
                 ),
+                if(!isLogin)
                 Button(
                     text: 'Login',
                     move: () {
