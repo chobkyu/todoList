@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/widgets/customAppBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,7 +12,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _authentication = FirebaseAuth.instance;
+
   bool isSignupScreen = true;
+  final _formKey = GlobalKey<FormState>();
+
+  String userName = '';
+  String userEmail = '';
+  String userPassword = '';
+
+  void _tryValidation(){
+    final isValid = _formKey.currentState!.validate(); //폼필드 안 validator를 작동시킬 수 있음
+    if(isValid){
+      _formKey.currentState!.save();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,105 +53,241 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(15.0)
                   ),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                isSignupScreen = false;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'LOGIN',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isSignupScreen = false;
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'LOGIN',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: !isSignupScreen ? Colors.white:Colors.grey,
+                                    ),
+                                  ),
+                                  if(!isSignupScreen)
+                                  Container(
+                                    margin: const EdgeInsets.only(top:3),
+                                    height: 2,
+                                    width: 55,
                                     color: !isSignupScreen ? Colors.white:Colors.grey,
-                                  ),
-                                ),
-                                if(!isSignupScreen)
-                                Container(
-                                  margin: const EdgeInsets.only(top:3),
-                                  height: 2,
-                                  width: 55,
-                                  color: !isSignupScreen ? Colors.white:Colors.grey,
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                isSignupScreen = true;
-                              });
-                            },
-                            child: Column(
-                              children: [
-                                Text(
-                                  'SIGNUP',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                            GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  isSignupScreen = true;
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'SIGNUP',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: isSignupScreen ? Colors.white:Colors.grey,
+                                    ),
+                                  ),
+                                  if(isSignupScreen)
+                                  Container(
+                                    margin: const EdgeInsets.only(top:3),
+                                    height: 2,
+                                    width: 55,
                                     color: isSignupScreen ? Colors.white:Colors.grey,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        if(isSignupScreen)
+                        Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: Form(
+                              key : _formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    key : ValueKey(1),
+                                    validator: (value){
+                                      if(value!.isEmpty || value.length<4){
+                                        return 'Please enter at least 4 characters';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value){
+                                      userName = value!;
+                                    },
+                                    onChanged: (value){
+                                      userName = value;
+                                    },
+                                    style: const TextStyle(color: Colors.white),
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(
+                                          Icons.account_circle,
+                                          color : Colors.white,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide : BorderSide(
+                                          color : Colors.white
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(35),
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color : Colors.white,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(35),
+                                        ),
+                                      ),
+                                      hintText: 'User Name',
+                                      hintStyle: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey
+                                      ),
+                                      contentPadding: EdgeInsets.all(10)
+                                    ),
                                   ),
-                                ),
-                                if(isSignupScreen)
-                                Container(
-                                  margin: const EdgeInsets.only(top:3),
-                                  height: 2,
-                                  width: 55,
-                                  color: isSignupScreen ? Colors.white:Colors.grey,
-                                )
-                              ],
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    key : ValueKey(2),
+                                    onSaved: (value){
+                                      userEmail = value!;
+                                    },
+                                    onChanged: (value){
+                                      userEmail = value;
+                                    },
+                                    validator: (value){
+                                      if(value!.isEmpty || !value.contains('@')){
+                                        return 'Please enter a valid email address';
+                                      }
+                                      return null;
+                                    },
+                                    style: const TextStyle(color: Colors.white),
+                                    decoration: const InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.email,
+                                          color : Colors.white,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide : BorderSide(
+                                              color : Colors.white
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color : Colors.white,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35),
+                                          ),
+                                        ),
+                                        hintText: 'Email',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey
+                                        ),
+                                        contentPadding: EdgeInsets.all(10)
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  TextFormField(
+                                    key : ValueKey(3),
+                                    validator: (value){
+                                      if(value!.isEmpty || value.length<6){
+                                        return 'Please enter at least 6 characters long.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value){
+                                      userPassword = value!;
+                                    },
+                                    onChanged: (value){
+                                      userPassword = value;
+                                    },
+                                    obscureText: true,
+                                    style: const TextStyle(color: Colors.white),
+                                    decoration: const InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color : Colors.white,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide : BorderSide(
+                                              color : Colors.white
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color : Colors.white,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35),
+                                          ),
+                                        ),
+                                        hintText: 'Password',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey
+                                        ),
+                                        contentPadding: EdgeInsets.all(10)
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          )
-                        ],
-                      ),
-                      if(isSignupScreen)
-                      Container(
-                          margin: const EdgeInsets.only(top: 20),
+                        ),
+                        if(!isSignupScreen)
+                        Container(
+                          margin: EdgeInsets.only(top:20),
                           child: Form(
+                            key : _formKey,
                             child: Column(
                               children: [
                                 TextFormField(
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(
-                                        Icons.account_circle,
-                                        color : Colors.white,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide : BorderSide(
-                                        color : Colors.white
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color : Colors.white,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    hintText: 'User Name',
-                                    hintStyle: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey
-                                    ),
-                                    contentPadding: EdgeInsets.all(10)
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                TextFormField(
+                                  key : ValueKey(4),
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (value){
+                                    if(value!.isEmpty || !value.contains('@')){
+                                      return 'Please enter a valid email address';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value){
+                                    userEmail : value!;
+                                  },
+                                  onChanged: (value){
+                                    userEmail = value;
+                                  },
+                                  style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                       prefixIcon: Icon(
                                         Icons.email,
@@ -156,7 +309,7 @@ class _LoginPageState extends State<LoginPage> {
                                           Radius.circular(35),
                                         ),
                                       ),
-                                      hintText: 'Email',
+                                      hintText: 'User Email',
                                       hintStyle: TextStyle(
                                           fontSize: 14,
                                           color: Colors.grey
@@ -168,6 +321,21 @@ class _LoginPageState extends State<LoginPage> {
                                   height: 8,
                                 ),
                                 TextFormField(
+                                  key : ValueKey(5),
+                                  validator: (value){
+                                    if(value!.isEmpty || value.length<6){
+                                      return 'Please enter at least 6 characters long.';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value){
+                                    userPassword = value!;
+                                  },
+                                  onChanged: (value){
+                                    userPassword = value;
+                                  },
+                                  obscureText: true,
+                                  style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                       prefixIcon: Icon(
                                         Icons.lock,
@@ -200,88 +368,16 @@ class _LoginPageState extends State<LoginPage> {
                               ],
                             ),
                           ),
-                      ),
-                      if(!isSignupScreen)
-                      Container(
-                        margin: EdgeInsets.only(top:20),
-                        child: Form(
-                          child: Column(
-                            children: [
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.account_circle,
-                                      color : Colors.white,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide : BorderSide(
-                                          color : Colors.white
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color : Colors.white,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    hintText: 'User Name',
-                                    hintStyle: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey
-                                    ),
-                                    contentPadding: EdgeInsets.all(10)
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    prefixIcon: Icon(
-                                      Icons.lock,
-                                      color : Colors.white,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide : BorderSide(
-                                          color : Colors.white
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color : Colors.white,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35),
-                                      ),
-                                    ),
-                                    hintText: 'Password',
-                                    hintStyle: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey
-                                    ),
-                                    contentPadding: EdgeInsets.all(10)
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
 
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
             ),
           //text
           AnimatedPositioned(
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             curve:Curves.easeIn,
             top: isSignupScreen ? 430 : 390,
             right:0,
@@ -295,21 +391,87 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.black, //update
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient : const LinearGradient(
-                      colors: [
-                        Colors.black,
-                        Colors.grey,
-                      ],
-                      begin: Alignment.topLeft,
-                      end : Alignment.bottomRight
+                child: GestureDetector(
+                  onTap: () async{
+                    if(isSignupScreen){
+                      _tryValidation();
+                      try{
+                        final newUser =await  _authentication.createUserWithEmailAndPassword(
+                          email: userEmail,
+                          password: userPassword,
+                        );
+
+                        if(newUser.user != null){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context){
+                              return HomeScreen();
+                            })
+                          );
+                        }
+                      }catch(err){
+                        print(err);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Please check your email and password'
+                            ),
+                            backgroundColor: Colors.black,
+                          ),
+                        );
+                      }
+
+                    }
+
+                    if(!isSignupScreen){
+                      _tryValidation();
+
+                      try{
+                        final newUser = await _authentication.signInWithEmailAndPassword(
+                            email: userEmail,
+                            password: userPassword
+                        );
+
+                        if(newUser.user != null){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context){
+                                return HomeScreen();
+                              })
+                          );
+                        }
+                      }catch(err){
+                        print(err);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Please check your email and password'
+                            ),
+                            backgroundColor: Colors.black,
+                          ),
+                        );
+                      }
+
+
+                    }
+
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient : const LinearGradient(
+                        colors: [
+                          Colors.black,
+                          Colors.grey,
+                        ],
+                        begin: Alignment.topLeft,
+                        end : Alignment.bottomRight
+                      ),
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -322,9 +484,9 @@ class _LoginPageState extends State<LoginPage> {
               left: 0,
               child: Column(
                 children: [
-                  const Text(
-                      'or Signup with',
-                      style: TextStyle(
+                  Text(
+                     isSignupScreen ? 'or Signup with' : 'or Signin with',
+                      style: const TextStyle(
                         color: Colors.white
                       ),
                   ),
@@ -337,12 +499,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         backgroundColor: Colors.black
                       ),
-                      icon: Icon(Icons.add),
-                      label: Text('Google'),
+                      icon: const Icon(Icons.add),
+                      label: const Text(
+                          'Google'
+                      ),
                   ),
                 ],
-              )
-          )
+              ),
+          ),
         ],
       ),
     );
