@@ -284,6 +284,9 @@ class _LoginPageState extends State<LoginPage> {
                                   onSaved: (value){
                                     userEmail : value!;
                                   },
+                                  onChanged: (value){
+                                    userEmail = value;
+                                  },
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                       prefixIcon: Icon(
@@ -327,6 +330,9 @@ class _LoginPageState extends State<LoginPage> {
                                   },
                                   onSaved: (value){
                                     userPassword = value!;
+                                  },
+                                  onChanged: (value){
+                                    userPassword = value;
                                   },
                                   obscureText: true,
                                   style: const TextStyle(color: Colors.white),
@@ -410,10 +416,42 @@ class _LoginPageState extends State<LoginPage> {
                             content: Text(
                               'Please check your email and password'
                             ),
-                            backgroundColor: Colors.white,
+                            backgroundColor: Colors.black,
                           ),
                         );
                       }
+
+                    }
+
+                    if(!isSignupScreen){
+                      _tryValidation();
+
+                      try{
+                        final newUser = await _authentication.signInWithEmailAndPassword(
+                            email: userEmail,
+                            password: userPassword
+                        );
+
+                        if(newUser.user != null){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context){
+                                return HomeScreen();
+                              })
+                          );
+                        }
+                      }catch(err){
+                        print(err);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Please check your email and password'
+                            ),
+                            backgroundColor: Colors.black,
+                          ),
+                        );
+                      }
+
 
                     }
 
