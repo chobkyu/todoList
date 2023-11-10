@@ -19,10 +19,17 @@ class _CustomAppBarState extends State<CustomAppBar> {
   User? loggedUser;
   bool isLogin = false;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
   void getCurrentUser(){
     try{
       final user = _authentication.currentUser;
       if(user != null){
+        print(user);
         loggedUser = user;
         isLogin = true;
       }
@@ -42,7 +49,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
       backgroundColor: Colors.black,
       centerTitle: true,
       actions: [
-        if(!isLogin)
+        //if(!isLogin)
         IconButton(
           icon: const Icon(
             Icons.exit_to_app_sharp,

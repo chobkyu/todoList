@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try{
       final user = _authentication.currentUser;
       if(user != null){
+        print(user);
         loggedUser = user;
         isLogin = true;
       }
