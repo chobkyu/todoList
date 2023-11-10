@@ -31,7 +31,9 @@ class _CreateToDoState extends State<CreateToDo> {
 
   void createTap(){
     var createTodoService = CreateTodoService(todo, detail, dateTime!);
-
+    if(todo==''||detail==''||dateTime==null){
+      return;
+    }
     createTodoService.insertTodo();
     _showDialog();
   }
