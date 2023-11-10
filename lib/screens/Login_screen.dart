@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/widgets/customAppBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _authentication = FirebaseAuth.instance;
+
   bool isSignupScreen = true;
   final _formKey = GlobalKey<FormState>();
 
@@ -127,6 +132,9 @@ class _LoginPageState extends State<LoginPage> {
                                     onSaved: (value){
                                       userName = value!;
                                     },
+                                    onChanged: (value){
+                                      userName = value;
+                                    },
                                     style: const TextStyle(color: Colors.white),
                                     decoration: const InputDecoration(
                                       prefixIcon: Icon(
@@ -161,9 +169,13 @@ class _LoginPageState extends State<LoginPage> {
                                     height: 8,
                                   ),
                                   TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
                                     key : ValueKey(2),
                                     onSaved: (value){
                                       userEmail = value!;
+                                    },
+                                    onChanged: (value){
+                                      userEmail = value;
                                     },
                                     validator: (value){
                                       if(value!.isEmpty || !value.contains('@')){
@@ -215,6 +227,10 @@ class _LoginPageState extends State<LoginPage> {
                                     onSaved: (value){
                                       userPassword = value!;
                                     },
+                                    onChanged: (value){
+                                      userPassword = value;
+                                    },
+                                    obscureText: true,
                                     style: const TextStyle(color: Colors.white),
                                     decoration: const InputDecoration(
                                         prefixIcon: Icon(
@@ -258,6 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                               children: [
                                 TextFormField(
                                   key : ValueKey(4),
+                                  keyboardType: TextInputType.emailAddress,
                                   validator: (value){
                                     if(value!.isEmpty || !value.contains('@')){
                                       return 'Please enter a valid email address';
@@ -311,6 +328,7 @@ class _LoginPageState extends State<LoginPage> {
                                   onSaved: (value){
                                     userPassword = value!;
                                   },
+                                  obscureText: true,
                                   style: const TextStyle(color: Colors.white),
                                   decoration: const InputDecoration(
                                       prefixIcon: Icon(
@@ -368,8 +386,37 @@ class _LoginPageState extends State<LoginPage> {
                   borderRadius: BorderRadius.circular(50),
                 ),
                 child: GestureDetector(
-                  onTap: (){
-                    _tryValidation();
+                  onTap: () async{
+                    if(isSignupScreen){
+                      _tryValidation();
+                      try{
+                        final newUser =await  _authentication.createUserWithEmailAndPassword(
+                          email: userEmail,
+                          password: userPassword,
+                        );
+
+                        if(newUser.user != null){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context){
+                              return HomeScreen();
+                            })
+                          );
+                        }
+                      }catch(err){
+                        print(err);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Please check your email and password'
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                        );
+                      }
+
+                    }
+
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -414,7 +461,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         backgroundColor: Colors.black
                       ),
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       label: const Text(
                           'Google'
                       ),
