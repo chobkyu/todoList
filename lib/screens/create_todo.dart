@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/home_screen.dart';
 import 'package:todolist/service/CreateTodoService.dart';
@@ -17,6 +18,29 @@ class _CreateToDoState extends State<CreateToDo> {
   String detail = '';
   DateTime? dateTime;
 
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser(){
+    try{
+      final user = _authentication.currentUser;
+      if(user != null){
+        print(user);
+        loggedUser = user;
+      }
+    }catch(err){
+      print(err);
+    }
+  }
+
   void getTitle(String str) {
     setState(() {
       todo = str;
@@ -34,7 +58,8 @@ class _CreateToDoState extends State<CreateToDo> {
     if(todo==''||detail==''||dateTime==null){
       return;
     }
-    createTodoService.insertTodo();
+    String? userId = loggedUser?.email;
+    createTodoService.insertTodo(userId);
     _showDialog();
   }
 
