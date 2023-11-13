@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/detail_page.dart';
 import 'package:todolist/service/CreateTodoService.dart';
@@ -15,7 +16,32 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  Query<Map<String, dynamic>> todolist = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: false);
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+  //late String userEmail;
+  late Query<Map<String,dynamic>> todolist;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser(){
+    try{
+      final user = _authentication.currentUser;
+      if(user != null){
+        //print(user);
+        loggedUser = user;
+        String? userEmail = loggedUser?.email;
+        todolist = FirebaseFirestore.instance.collection('todo').doc(userEmail).collection(userEmail!).where('doIt', isEqualTo: false);
+        //print(todolist);
+      }
+    }catch(err){
+      print(err);
+    }
+  }
 
   void detailPage(DocumentSnapshot snapshot) {
       Navigator.push(
@@ -40,7 +66,8 @@ class _TodoListState extends State<TodoList> {
   }
 
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
-    return await FirebaseFirestore.instance.collection('todo').doc(snapshot.id).set(
+    String? userId = loggedUser?.email;
+    return await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(snapshot.id).set(
         {
           'todo':snapshot['todo'],
           'detail':snapshot['detail'],

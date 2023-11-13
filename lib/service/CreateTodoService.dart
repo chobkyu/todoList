@@ -10,13 +10,24 @@ class CreateTodoService {
 
   CreateTodoService(this.todo, this.detail, this.dateTime);
 
-  Future<void> insertTodo() async {
-    await _firestore.collection('todo').doc().set({
-      "todo": todo,
-      "detail": detail,
-      "dateTime": dateTime,
-      "doIt":false,
-    });
+  Future<void> insertTodo(userId) async {
+    try{
+      await _firestore.collection('todo').doc(userId).collection(userId).doc().set({
+        "todo":todo,
+        "detail":detail,
+        "dateTime":dateTime,
+        "doIt":false
+      });
+    }catch(err){
+      print(err);
+    }
+
+    // await _firestore.collection('todo').doc().set({
+    //   "todo": todo,
+    //   "detail": detail,
+    //   "dateTime": dateTime,
+    //   "doIt":false,
+    // });
   }
 
 }

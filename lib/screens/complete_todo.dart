@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/customAppBar.dart';
@@ -12,9 +13,33 @@ class CompleteTodo extends StatefulWidget {
 }
 
 class _CompleteTodoState extends State<CompleteTodo> {
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+  late Query<Map<String, dynamic>> completeList;
+  //Query<Map<String, dynamic>> completeList = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: true);
 
-  Query<Map<String, dynamic>> completeList = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: true);
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser(){
+    try{
+      final user = _authentication.currentUser;
+      if(user != null){
+        //print(user);
+        loggedUser = user;
+        String? userEmail = loggedUser?.email;
+        completeList = FirebaseFirestore.instance.collection('todo').doc(userEmail).collection(userEmail!).where('doIt', isEqualTo: true);
+        //print(todolist);
+      }
+    }catch(err){
+      print(err);
+    }
+  }
   void detailPage(DocumentSnapshot snapshot) {
     Navigator.push(
         context,

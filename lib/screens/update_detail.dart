@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/customAppBar.dart';
@@ -19,6 +20,30 @@ class _UpdateDetailState extends State<UpdateDetail> {
   String detail = '';
   DateTime? dateTime;
 
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+  String? userId;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser(){
+    try{
+      final user = _authentication.currentUser;
+      if(user != null){
+        print(user);
+        loggedUser = user;
+        userId = loggedUser?.email;
+      }
+    }catch(err){
+      print(err);
+    }
+  }
+
   void getTitle(String str) {
     setState(() {
       todo = str;
@@ -31,14 +56,17 @@ class _UpdateDetailState extends State<UpdateDetail> {
     });
   }
 
-  void updateTap(dynamic id) {
-    updateDoIt(id);
+  void updateTap(dynamic snapshot) {
+    if(todo=='') todo = snapshot.get('todo');
+    if(detail=='') detail = snapshot.get('detail');
+    dateTime ??= snapshot.get('dateTime').toDate();
+    updateDoIt(snapshot.id);
     _showDialog();
 
   }
 
   Future<void> updateDoIt(id) async {
-    return await FirebaseFirestore.instance.collection('todo').doc(id).set(
+    return await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(id).set(
         {
           'todo':todo,
           'detail':detail,
@@ -145,7 +173,8 @@ class _UpdateDetailState extends State<UpdateDetail> {
             ),
             ElevatedButton(
               onPressed: (){
-                updateTap(widget.snapshot?.id);
+                print(widget.snapshot?.data());
+                updateTap(widget.snapshot);
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,

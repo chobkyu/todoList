@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/screens/update_detail.dart';
@@ -21,16 +22,44 @@ class _DetailPageState extends State<DetailPage> {
     return date.toString();
   }
 
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser(){
+    try{
+      final user = _authentication.currentUser;
+      if(user != null){
+        print(user);
+        loggedUser = user;
+      }
+    }catch(err){
+      print(err);
+    }
+  }
+
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
-    await FirebaseFirestore.instance.collection('todo').doc(snapshot.id).set(
-        {
-          'todo':snapshot['todo'],
-          'detail':snapshot['detail'],
-          'dateTime':snapshot['dateTime'],
-          'doIt':true,
-        }
+    String? userId = loggedUser?.email;
+    print(userId);
+    await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(snapshot.id).set(
+       {
+         'todo':snapshot['todo'],
+         'detail':snapshot['detail'],
+         'dateTime':snapshot['dateTime'],
+         'doIt':true,
+      }
     );
     _showDialog();
+
+
+
+
+
   }
 
   void _showDialog(){
