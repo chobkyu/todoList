@@ -7,6 +7,9 @@ import 'package:todolist/service/GetListService.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
 import '../models/TodoModel.dart';
+import '../widgets/button.dart';
+import 'Login_screen.dart';
+import 'create_todo.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -37,6 +40,26 @@ class _TodoListState extends State<TodoList> {
         String? userEmail = loggedUser?.email;
         todolist = FirebaseFirestore.instance.collection('todo').doc(userEmail).collection(userEmail!).where('doIt', isEqualTo: false);
         //print(todolist);
+      }else{
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = const Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: curve));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) =>
+            const LoginPage(),
+          ),
+        );
       }
     }catch(err){
       print(err);
@@ -77,6 +100,28 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
+  void goToLoginPage(){
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+          var begin = const Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) =>
+        const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,12 +134,18 @@ class _TodoListState extends State<TodoList> {
         stream: todolist.snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot> streamSnapshot) {
+
+          if(streamSnapshot.connectionState == ConnectionState.waiting){
+            return const CircularProgressIndicator();
+          }
           if (streamSnapshot.hasData) {
             return ListView.builder(
                 itemCount: streamSnapshot.data!.docs.length,
                 itemBuilder: (context, index) {
-                  final DocumentSnapshot documentSnapShot =
-                  streamSnapshot.data!.docs[index];
+
+
+                final DocumentSnapshot documentSnapShot =
+                streamSnapshot.data!.docs[index];
 
                   Timestamp stamp = documentSnapShot['dateTime'];
                   DateTime date = stamp.toDate();
@@ -157,6 +208,60 @@ class _TodoListState extends State<TodoList> {
                     ),
                   );
                 });
+          // }else if(streamSnapshot.data==null){
+          //   print('nullnull');
+          //   return ListView.builder(
+          //     itemCount: streamSnapshot.data?.docs.length,
+          //     itemBuilder: (context, index) {
+          //       return Center(
+          //         child: Column(
+          //           children: [
+          //             const SizedBox(
+          //               height: 100,
+          //             ),
+          //             const Text(
+          //               'no data',
+          //               style: TextStyle(
+          //                 color: Colors.white,
+          //                 fontSize: 10,
+          //               ),
+          //             ),
+          //             Button(
+          //               text: 'make to do',
+          //               move: () {
+          //                 if(loggedUser!=null){
+          //                   Navigator.push(
+          //                     context,
+          //                     PageRouteBuilder(
+          //                       transitionsBuilder:
+          //                           (context, animation, secondaryAnimation, child) {
+          //                         var begin = const Offset(0.0, 1.0);
+          //                         var end = Offset.zero;
+          //                         var curve = Curves.ease;
+          //                         var tween = Tween(begin: begin, end: end)
+          //                             .chain(CurveTween(curve: curve));
+          //                         return SlideTransition(
+          //                           position: animation.drive(tween),
+          //                           child: child,
+          //                         );
+          //                       },
+          //                       pageBuilder: (context, animation, secondaryAnimation) =>
+          //                       const CreateToDo(),
+          //                     ),
+          //                   );
+          //                 }else{
+          //                   goToLoginPage();
+          //                 }
+          //
+          //               },
+          //             ),
+          //           ],
+          //         ),
+          //       );
+          //     }
+          //
+          //   );
+
           }
           return const CircularProgressIndicator();
         },
@@ -164,3 +269,4 @@ class _TodoListState extends State<TodoList> {
     );
   }
 }
+

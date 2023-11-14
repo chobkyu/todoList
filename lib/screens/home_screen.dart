@@ -41,6 +41,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
 
+  void goToLoginPage(){
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder:
+            (context, animation, secondaryAnimation, child) {
+          var begin = const Offset(0.0, 1.0);
+          var end = Offset.zero;
+          var curve = Curves.ease;
+          var tween = Tween(begin: begin, end: end)
+              .chain(CurveTween(curve: curve));
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+        pageBuilder: (context, animation, secondaryAnimation) =>
+        const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,60 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Button(
                   text: 'todolist',
                   move: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          var begin = const Offset(0.0, 1.0);
-                          var end = Offset.zero;
-                          var curve = Curves.ease;
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          return SlideTransition(
-                            position: animation.drive(tween),
-                            child: child,
-                          );
-                        },
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const TodoList(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Button(
-                  text: 'make to do',
-                  move: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          var begin = const Offset(0.0, 1.0);
-                          var end = Offset.zero;
-                          var curve = Curves.ease;
-                          var tween = Tween(begin: begin, end: end)
-                              .chain(CurveTween(curve: curve));
-                          return SlideTransition(
-                            position: animation.drive(tween),
-                            child: child,
-                          );
-                        },
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const CreateToDo(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Button(
-                    text: 'complete',
-                    move: () {
+                    if(loggedUser!=null){
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -133,11 +102,79 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: child,
                             );
                           },
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  const CompleteTodo(),
+                          pageBuilder: (context, animation, secondaryAnimation) =>
+                          const TodoList(),
                         ),
                       );
+                    }else{
+                      goToLoginPage();
+                    }
+
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Button(
+                  text: 'make to do',
+                  move: () {
+                    if(loggedUser!=null){
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(0.0, 1.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          pageBuilder: (context, animation, secondaryAnimation) =>
+                          const CreateToDo(),
+                        ),
+                      );
+                    }else{
+                      goToLoginPage();
+                    }
+
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Button(
+                    text: 'complete',
+                    move: () {
+                      if(loggedUser!=null){
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            transitionsBuilder:
+                                (context, animation, secondaryAnimation, child) {
+                              var begin = const Offset(0.0, 1.0);
+                              var end = Offset.zero;
+                              var curve = Curves.ease;
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                            const CompleteTodo(),
+                          ),
+                        );
+                      }else{
+                        goToLoginPage();
+                      }
+
                     }
                 ),
                 const SizedBox(

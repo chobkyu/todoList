@@ -451,10 +451,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       }
-
-
                     }
-
                   },
                   child: Container(
                     decoration: BoxDecoration(

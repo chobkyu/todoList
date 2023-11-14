@@ -54,15 +54,33 @@ class _CreateToDoState extends State<CreateToDo> {
   }
 
   void createTap(){
-    var createTodoService = CreateTodoService(todo, detail, dateTime!);
     if(todo==''||detail==''||dateTime==null){
+      _ErrorDialog();
       return;
     }
+
+    var createTodoService = CreateTodoService(todo, detail, dateTime!);
+
     String? userId = loggedUser?.email;
     createTodoService.insertTodo(userId);
     _showDialog();
   }
 
+  void _ErrorDialog(){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text('Alert'),
+        content: const Text("입력사항을 전부 입력해주세요"),
+        actions: <Widget>[
+          BackButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      );
+    });
+  }
   void _showDialog(){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
