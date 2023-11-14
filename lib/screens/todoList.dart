@@ -7,6 +7,7 @@ import 'package:todolist/service/GetListService.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
 import '../models/TodoModel.dart';
+import 'Login_screen.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -37,6 +38,26 @@ class _TodoListState extends State<TodoList> {
         String? userEmail = loggedUser?.email;
         todolist = FirebaseFirestore.instance.collection('todo').doc(userEmail).collection(userEmail!).where('doIt', isEqualTo: false);
         //print(todolist);
+      }else{
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = const Offset(0.0, 1.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end)
+                  .chain(CurveTween(curve: curve));
+              return SlideTransition(
+                position: animation.drive(tween),
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) =>
+            const LoginPage(),
+          ),
+        );
       }
     }catch(err){
       print(err);
