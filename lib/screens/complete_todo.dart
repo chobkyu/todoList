@@ -99,9 +99,15 @@ class _CompleteTodoState extends State<CompleteTodo> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              Text(
-                                documentSnapshot['detail'],
-                                style: const TextStyle(color: Colors.white),
+                              SizedBox(
+                                width: 200,
+                                child: Text(
+                                  documentSnapshot['detail'],
+                                  style: const TextStyle(color: Colors.white),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  softWrap: false,
+                                ),
                               )
                             ],
                           ),

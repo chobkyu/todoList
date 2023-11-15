@@ -122,6 +122,13 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
+  bool checkTime(Timestamp time){
+    DateTime date = time.toDate();
+    // final difference = date.difference(DateTime.now());
+    var now = DateTime.now();
+    return now.isAfter(date);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,12 +161,34 @@ class _TodoListState extends State<TodoList> {
                     color: Colors.black,
                     child: ListTile(
                       onTap: (){detailPage(documentSnapShot);},
-                      title: Text(
-                        documentSnapShot['todo'],
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w900
-                        ),
+                      title: Row(
+                        children: [
+                          Text(
+                            documentSnapShot['todo'],
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          if(checkTime(documentSnapShot['dateTime']))
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.deepOrange,
+                            ),
+                            child: const Text(
+                             ' hurry! ',
+                              style: TextStyle(
+                                color: Colors.white,
+
+
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       subtitle: Row(
                         children: [

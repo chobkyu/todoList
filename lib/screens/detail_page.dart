@@ -22,6 +22,15 @@ class _DetailPageState extends State<DetailPage> {
     return date.toString();
   }
 
+  String getRemainTime(Timestamp time){
+    DateTime date = time.toDate();
+    var _nowDay = DateTime.now();
+
+    Duration difference = date.difference(_nowDay);
+    print('${difference.inDays}일 ${difference.inHours}시간 ${difference.inMinutes}분 남음');
+    return '${difference.inDays}일 남음';
+  }
+
   final _authentication = FirebaseAuth.instance;
   User? loggedUser;
   @override
@@ -46,20 +55,16 @@ class _DetailPageState extends State<DetailPage> {
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
     String? userId = loggedUser?.email;
     print(userId);
-    await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(snapshot.id).set(
-       {
-         'todo':snapshot['todo'],
-         'detail':snapshot['detail'],
-         'dateTime':snapshot['dateTime'],
-         'doIt':true,
-      }
+    await FirebaseFirestore.instance.collection('todo').doc(userId).collection(
+        userId!).doc(snapshot.id).set(
+        {
+          'todo': snapshot['todo'],
+          'detail': snapshot['detail'],
+          'dateTime': snapshot['dateTime'],
+          'doIt': true,
+        }
     );
     _showDialog();
-
-
-
-
-
   }
 
   void _showDialog(){
@@ -70,11 +75,14 @@ class _DetailPageState extends State<DetailPage> {
         actions: <Widget>[
           BackButton(
             onPressed: (){
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context){
-                    return const TodoList();
-                  }));
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(builder: (context){
+              //       return const TodoList();
+              //     }));
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
             },
           )
         ],
@@ -155,6 +163,21 @@ class _DetailPageState extends State<DetailPage> {
               height: 38,
               child: Text(
                 getTime(widget.snapshot?.get('dateTime')),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              color: Colors.black,
+              width: 350,
+              height: 38,
+              child: Text(
+                getRemainTime(widget.snapshot?.get('dateTime')),
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20

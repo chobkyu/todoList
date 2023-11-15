@@ -97,13 +97,17 @@ class _UpdateDetailState extends State<UpdateDetail> {
         actions: <Widget>[
           BackButton(
             onPressed: (){
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context){
-                    return const TodoList();
-                  },
-                ),
-              );
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(builder: (context){
+              //       return const TodoList();
+              //     },
+              //   ),
+              // );
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
             },
           )
         ],
