@@ -89,13 +89,14 @@ class _CreateToDoState extends State<CreateToDo> {
         actions: <Widget>[
           BackButton(
             onPressed: (){
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context){
-                    return const HomeScreen();
-                  },
-                ),
-              );
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(builder: (context){
+              //       return const HomeScreen();
+              //     },
+              //   ),
+              // );
+              Navigator.of(context).popUntil((route) => route.isFirst);
             },
           )
         ],

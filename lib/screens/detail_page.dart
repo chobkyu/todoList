@@ -75,11 +75,14 @@ class _DetailPageState extends State<DetailPage> {
         actions: <Widget>[
           BackButton(
             onPressed: (){
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context){
-                    return const TodoList();
-                  }));
+              // Navigator.pushReplacement(
+              //     context,
+              //     MaterialPageRoute(builder: (context){
+              //       return const TodoList();
+              //     }));
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+
             },
           )
         ],

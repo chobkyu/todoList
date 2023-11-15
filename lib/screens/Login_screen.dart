@@ -433,12 +433,13 @@ class _LoginPageState extends State<LoginPage> {
                         );
 
                         if(newUser.user != null){
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context){
-                                return HomeScreen();
-                              })
-                          );
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(builder: (context){
+                          //       return HomeScreen();
+                          //     })
+                          // );
+                          Navigator.of(context).pop();
                         }
                       }catch(err){
                         print(err);
