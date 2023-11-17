@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:todolist/screens/Login_screen.dart';
 import 'package:todolist/screens/complete_todo.dart';
 import 'package:todolist/screens/create_todo.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/button.dart';
 
+import '../main.dart';
 import '../widgets/customAppBar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -63,8 +65,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+    TargetPlatform os = Theme.of(context).platform;
+
+    BannerAd banner = BannerAd(
+      listener: BannerAdListener(
+        onAdFailedToLoad: (Ad ad, LoadAdError error) {},
+        onAdLoaded: (_) {},
+      ),
+      size: AdSize.banner,
+      adUnitId: UNIT_ID[os == TargetPlatform.iOS ? 'ios' : 'android']!,
+      request: AdRequest(),
+    )..load();
+
+    @override
+    void dispose() {
+      super.dispose();
+      banner.dispose();
+    }
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
       appBar: const PreferredSize(
@@ -205,6 +226,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       );
                     }
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                AdWidget(
+                    ad: banner
                 ),
               ],
             ),
