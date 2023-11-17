@@ -65,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     TargetPlatform os = Theme.of(context).platform;
@@ -78,7 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
       adUnitId: UNIT_ID[os == TargetPlatform.iOS ? 'ios' : 'android']!,
       request: AdRequest(),
     )..load();
-    
+
+    @override
+    void dispose() {
+      super.dispose();
+      banner.dispose();
+    }
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
       appBar: const PreferredSize(
