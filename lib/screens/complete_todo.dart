@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/complete_detail.dart';
 
 import '../widgets/customAppBar.dart';
 import 'detail_page.dart';
@@ -57,7 +58,7 @@ class _CompleteTodoState extends State<CompleteTodo> {
             );
           },
           pageBuilder: (context, animation, secondaryAnimation) =>
-          DetailPage(snapshot: snapshot),
+          CompleteDetail(snapshot: snapshot),
         )
     );
   }
@@ -86,6 +87,9 @@ class _CompleteTodoState extends State<CompleteTodo> {
                       return Card(
                         color: Colors.black,
                         child: ListTile(
+                          onTap: (){
+                            detailPage(documentSnapshot);
+                          },
                           title:Text(
                             documentSnapshot['todo'],
                             style: const TextStyle(

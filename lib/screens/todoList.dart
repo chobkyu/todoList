@@ -90,12 +90,14 @@ class _TodoListState extends State<TodoList> {
 
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
     String? userId = loggedUser?.email;
+    DateTime dt = DateTime.now();
     return await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(snapshot.id).set(
         {
           'todo':snapshot['todo'],
           'detail':snapshot['detail'],
           'dateTime':snapshot['dateTime'],
           'doIt':true,
+          'completeTime':dt,
         }
     );
   }
@@ -146,6 +148,7 @@ class _TodoListState extends State<TodoList> {
             return const CircularProgressIndicator();
           }
           if (streamSnapshot.hasData) {
+            print(streamSnapshot.data);
             return ListView.builder(
                 itemCount: streamSnapshot.data!.docs.length,
                 itemBuilder: (context, index) {

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/screens/update_detail.dart';
+import 'package:todolist/widgets/containerStr.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
 import 'home_screen.dart';
@@ -28,7 +29,7 @@ class _DetailPageState extends State<DetailPage> {
 
     Duration difference = date.difference(_nowDay);
     print('${difference.inDays}일 ${difference.inHours}시간 ${difference.inMinutes}분 남음');
-    return '${difference.inDays}일 남음';
+    return '남은 기간 : ${difference.inDays}일 ';
   }
 
   final _authentication = FirebaseAuth.instance;
@@ -55,6 +56,7 @@ class _DetailPageState extends State<DetailPage> {
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
     String? userId = loggedUser?.email;
     print(userId);
+    DateTime dt = DateTime.now();
     await FirebaseFirestore.instance.collection('todo').doc(userId).collection(
         userId!).doc(snapshot.id).set(
         {
@@ -62,6 +64,7 @@ class _DetailPageState extends State<DetailPage> {
           'detail': snapshot['detail'],
           'dateTime': snapshot['dateTime'],
           'doIt': true,
+          'completeTime':dt,
         }
     );
     _showDialog();
@@ -127,62 +130,34 @@ class _DetailPageState extends State<DetailPage> {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              color: Colors.black,
-              width: 350,
-              height: 38,
-              child: Text(
-                "${widget.snapshot?.get('todo') ?? 'n'}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: widget.snapshot?.get('todo')
             ),
             const SizedBox(
               height: 30,
             ),
-            Container(
-              color: Colors.black,
-              width: 350,
-              height: 350,
-              child: Text(
-                "${widget.snapshot?.get('detail') ?? 'n'}",
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 350,
+                data: widget.snapshot?.get('detail')
             ),
             const SizedBox(
               height: 30,
             ),
-            Container(
-              color: Colors.black,
-              width: 350,
-              height: 38,
-              child: Text(
-                getTime(widget.snapshot?.get('dateTime')),
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: getTime(widget.snapshot?.get('dateTime'))
             ),
             const SizedBox(
               height: 10,
             ),
-            Container(
-              color: Colors.black,
-              width: 350,
-              height: 38,
-              child: Text(
-                getRemainTime(widget.snapshot?.get('dateTime')),
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: getRemainTime(widget.snapshot?.get('dateTime'))
             ),
             const SizedBox(
               width: 110,
