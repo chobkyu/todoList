@@ -56,6 +56,7 @@ class _DetailPageState extends State<DetailPage> {
   Future<void> updateDoIt(DocumentSnapshot snapshot) async {
     String? userId = loggedUser?.email;
     print(userId);
+    DateTime dt = DateTime.now();
     await FirebaseFirestore.instance.collection('todo').doc(userId).collection(
         userId!).doc(snapshot.id).set(
         {
@@ -63,6 +64,7 @@ class _DetailPageState extends State<DetailPage> {
           'detail': snapshot['detail'],
           'dateTime': snapshot['dateTime'],
           'doIt': true,
+          'completeTime':dt,
         }
     );
     _showDialog();

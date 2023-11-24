@@ -22,6 +22,7 @@ class _CompleteDetailState extends State<CompleteDetail> {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
+
   }
 
   void getCurrentUser(){
@@ -75,11 +76,13 @@ class _CompleteDetailState extends State<CompleteDetail> {
             ContainerStr(
                 width: 350,
                 height: 38,
-                data: getTime(widget.snapshot?.get('dateTime'))
+                data: '예정 시간 :${getTime(widget.snapshot?.get('dateTime'))}'
             ),
             const SizedBox(
               height: 10,
-            )
+            ),
+
+            ContainerStr(width: 350, height: 38, data: '완료 시간 :${getTime(widget.snapshot?.get('completeTime')??'')}')
           ],
         ),
       ),
