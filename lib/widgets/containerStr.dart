@@ -8,8 +8,8 @@ class ContainerStr extends StatefulWidget {
     required this.data
   });
 
-  final int width;
-  final int height;
+  final double width;
+  final double height;
   final String data;
 
   @override
@@ -19,6 +19,17 @@ class ContainerStr extends StatefulWidget {
 class _ContainerStrState extends State<ContainerStr> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(
+      color: Colors.black,
+      width: widget.width,
+      height: widget.height,
+      child: Text(
+        widget.data,
+        style: const TextStyle(
+          color:Colors.white,
+          fontSize: 20
+        ),
+      ),
+    );
   }
 }

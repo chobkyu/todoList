@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/widgets/containerStr.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
 class CompleteDetail extends StatefulWidget {
@@ -55,47 +56,26 @@ class _CompleteDetailState extends State<CompleteDetail> {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              color: Colors.black,
-              width: 350,
-              height: 38,
-              child: Text(
-                "${widget.snapshot?.get('todo')}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: widget.snapshot?.get('todo')
             ),
             const SizedBox(
               height: 30,
             ),
-            Container(
-              color:Colors.black,
-              width: 350,
-              height: 350,
-              child: Text(
-                "${widget.snapshot?.get('detail')}",
-                style: const TextStyle(
-                  color:Colors.white,
-                  fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 350,
+                data: widget.snapshot?.get('detail')
             ),
             const SizedBox(
               height: 30,
             ),
-            Container(
-              color:Colors.black,
-              width: 350,
-              height: 38,
-              child: Text(
-                getTime(widget.snapshot?.get('dateTime')),
-                style: const TextStyle(
-                  color:Colors.white,
-                  fontSize: 20
-                ),
-              ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: getTime(widget.snapshot?.get('dateTime'))
             ),
             const SizedBox(
               height: 10,
