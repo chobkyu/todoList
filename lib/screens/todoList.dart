@@ -146,6 +146,7 @@ class _TodoListState extends State<TodoList> {
             return const CircularProgressIndicator();
           }
           if (streamSnapshot.hasData) {
+            print(streamSnapshot.data);
             return ListView.builder(
                 itemCount: streamSnapshot.data!.docs.length,
                 itemBuilder: (context, index) {

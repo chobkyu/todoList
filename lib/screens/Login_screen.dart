@@ -396,7 +396,7 @@ class _LoginPageState extends State<LoginPage> {
                     if(isSignupScreen){
                       _tryValidation();
                       try{
-                        final newUser =await  _authentication.createUserWithEmailAndPassword(
+                        final newUser =await _authentication.createUserWithEmailAndPassword(
                           email: userEmail,
                           password: userPassword,
                         );

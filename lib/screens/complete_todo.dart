@@ -86,6 +86,9 @@ class _CompleteTodoState extends State<CompleteTodo> {
                       return Card(
                         color: Colors.black,
                         child: ListTile(
+                          onTap: (){
+                            detailPage(documentSnapshot);
+                          },
                           title:Text(
                             documentSnapshot['todo'],
                             style: const TextStyle(
