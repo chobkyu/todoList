@@ -5,6 +5,7 @@ import 'package:todolist/screens/detail_page.dart';
 import 'package:todolist/service/CreateTodoService.dart';
 import 'package:todolist/service/GetListService.dart';
 import 'package:todolist/widgets/customAppBar.dart';
+import 'package:todolist/widgets/notice.dart';
 
 import '../models/TodoModel.dart';
 import '../widgets/button.dart';
@@ -186,32 +187,9 @@ class _TodoListState extends State<TodoList> {
                             width: 10,
                           ),
                           if(getRemainTime(documentSnapShot['dateTime'])<2&&getRemainTime(documentSnapShot['dateTime'])>0)
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.deepOrange
-                            ),
-                            child: const Text(
-                              ' hurry!',
-                              style: TextStyle(
-                                color:Colors.white
-                              ),
-                            ),
-                          )
+                          const NoticeWidget(text: ' hurry! ', color: Colors.deepOrange)
                           else if(checkTime(documentSnapShot['dateTime']))
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.deepPurple,
-                            ),
-                            child: const Text(
-                             ' fail ',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-
+                          const NoticeWidget(text: ' fail.. ', color: Colors.deepPurple)
                         ],
                       ),
                       subtitle: Row(
