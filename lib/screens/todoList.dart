@@ -5,6 +5,7 @@ import 'package:todolist/screens/detail_page.dart';
 import 'package:todolist/service/CreateTodoService.dart';
 import 'package:todolist/service/GetListService.dart';
 import 'package:todolist/widgets/customAppBar.dart';
+import 'package:todolist/widgets/notice.dart';
 
 import '../models/TodoModel.dart';
 import '../widgets/button.dart';
@@ -124,6 +125,15 @@ class _TodoListState extends State<TodoList> {
     );
   }
 
+  int getRemainTime(Timestamp time){
+    DateTime date = time.toDate();
+    var _nowDay = DateTime.now();
+
+    Duration difference = date.difference(_nowDay);
+    print('${difference.inDays}일 ${difference.inHours}시간 ${difference.inMinutes}분 남음');
+    return difference.inDays;
+  }
+
   bool checkTime(Timestamp time){
     DateTime date = time.toDate();
     // final difference = date.difference(DateTime.now());
@@ -176,21 +186,10 @@ class _TodoListState extends State<TodoList> {
                           const SizedBox(
                             width: 10,
                           ),
-                          if(checkTime(documentSnapShot['dateTime']))
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.deepOrange,
-                            ),
-                            child: const Text(
-                             ' hurry! ',
-                              style: TextStyle(
-                                color: Colors.white,
-
-
-                              ),
-                            ),
-                          ),
+                          if(getRemainTime(documentSnapShot['dateTime'])<2&&getRemainTime(documentSnapShot['dateTime'])>0)
+                          const NoticeWidget(text: ' hurry! ', color: Colors.deepOrange)
+                          else if(checkTime(documentSnapShot['dateTime']))
+                          const NoticeWidget(text: ' fail.. ', color: Colors.deepPurple)
                         ],
                       ),
                       subtitle: Row(
