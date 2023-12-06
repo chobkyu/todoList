@@ -1,27 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:todolist/screens/complete_detail.dart';
+import 'package:todolist/widgets/customAppBar.dart';
 
-import '../widgets/customAppBar.dart';
-import 'detail_page.dart';
+import 'complete_detail.dart';
 
-class CompleteTodo extends StatefulWidget {
-  const CompleteTodo({super.key});
+class FailTodo extends StatefulWidget {
+  const FailTodo({super.key});
 
   @override
-  State<CompleteTodo> createState() => _CompleteTodoState();
+  State<FailTodo> createState() => _FailTodoState();
 }
 
-class _CompleteTodoState extends State<CompleteTodo> {
+class _FailTodoState extends State<FailTodo> {
   final _authentication = FirebaseAuth.instance;
   User? loggedUser;
   late Query<Map<String, dynamic>> completeList;
-  //Query<Map<String, dynamic>> completeList = FirebaseFirestore.instance.collection('todo').where('doIt', isEqualTo: true);
-
 
   @override
-  void initState() {
+  void initState(){
     // TODO: implement initState
     super.initState();
     getCurrentUser();
@@ -41,6 +38,12 @@ class _CompleteTodoState extends State<CompleteTodo> {
       print(err);
     }
   }
+
+  bool checkTime(DateTime startDate, DateTime completeDate){
+    //print(date1.isAfter(date));
+    return completeDate.isAfter(startDate);
+  }
+
   void detailPage(DocumentSnapshot snapshot) {
     Navigator.push(
         context,
@@ -58,7 +61,7 @@ class _CompleteTodoState extends State<CompleteTodo> {
             );
           },
           pageBuilder: (context, animation, secondaryAnimation) =>
-          CompleteDetail(snapshot: snapshot),
+              CompleteDetail(snapshot: snapshot),
         )
     );
   }
@@ -67,34 +70,37 @@ class _CompleteTodoState extends State<CompleteTodo> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
-      appBar: const PreferredSize(
+      appBar : const PreferredSize(
         preferredSize: Size.fromHeight(50),
-        child: CustomAppBar(title: 'Complete'),
+        child:CustomAppBar(title: 'Fail')
       ),
       body: StreamBuilder(
-          stream: completeList.snapshots(),
-          builder: (BuildContext context,
-            AsyncSnapshot<QuerySnapshot> streamSnapshot){
-              if(streamSnapshot.hasData){
-                return ListView.builder(
-                    itemCount: streamSnapshot.data!.docs.length,
-                    itemBuilder: (context,index){
-                      final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
+        stream: completeList.snapshots(),
+        builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> streamSnapshot){
+          if(streamSnapshot.hasData){
+            return ListView.builder(
+                itemCount: streamSnapshot.data!.docs.length,
+                itemBuilder: (context,index){
+                  final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
 
-                      Timestamp stamp = documentSnapshot['dateTime'];
-                      DateTime date = stamp.toDate();
+                  Timestamp stampCreate = documentSnapshot['dateTime'];
+                  DateTime dateCreate = stampCreate.toDate();
 
-                      return Card(
-                        color: Colors.black,
+                  Timestamp stampComplete = documentSnapshot['completeTime'];
+                  DateTime dateComplete = stampComplete.toDate();
+
+                  if(checkTime(dateCreate, dateComplete)){
+                    return Card(
+                        color:Colors.black,
                         child: ListTile(
                           onTap: (){
                             detailPage(documentSnapshot);
                           },
-                          title:Text(
+                          title: Text(
                             documentSnapshot['todo'],
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900
+                                color:Colors.white,
+                                fontWeight: FontWeight.w900
                             ),
                           ),
                           subtitle: Row(
@@ -105,9 +111,9 @@ class _CompleteTodoState extends State<CompleteTodo> {
                               ),
                               SizedBox(
                                 width: 200,
-                                child: Text(
+                                child:Text(
                                   documentSnapshot['detail'],
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color:Colors.white),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                   softWrap: false,
@@ -115,14 +121,16 @@ class _CompleteTodoState extends State<CompleteTodo> {
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    });
-              }
-              return const CircularProgressIndicator();
+                        )
+                    );
+                  }
+
+                }
+            );
           }
+          return const CircularProgressIndicator();
+        },
       ),
     );
-
   }
 }

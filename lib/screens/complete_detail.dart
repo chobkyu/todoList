@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todolist/screens/fail_popup.dart';
 import 'package:todolist/widgets/containerStr.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
@@ -42,6 +43,13 @@ class _CompleteDetailState extends State<CompleteDetail> {
     return date.toString();
   }
 
+  bool checkTime(Timestamp startTime,Timestamp completeTime){
+    DateTime dateCreate = startTime.toDate();
+    DateTime dateComplete = completeTime.toDate();
+
+    return dateComplete.isAfter(dateCreate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,8 +89,53 @@ class _CompleteDetailState extends State<CompleteDetail> {
             const SizedBox(
               height: 10,
             ),
+            ContainerStr(
+                width: 350,
+                height: 38,
+                data: '완료 시간 :${getTime(widget.snapshot?.get('completeTime')??'')}'
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            if(checkTime(widget.snapshot?.get('dateTime'), widget.snapshot?.get('completeTime')))
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  elevation: 1
+                ),
+              onPressed: () {
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
 
-            ContainerStr(width: 350, height: 38, data: '완료 시간 :${getTime(widget.snapshot?.get('completeTime')??'')}')
+                      builder:(BuildContext context){
+                        return AlertDialog(
+
+                          backgroundColor: const Color.fromARGB(255, 51, 50, 50),
+                          content: const FailPopUp(),
+                          insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                          actions:[
+                            TextButton(
+                              onPressed: () { Navigator.of(context).pop(); },
+                              child:const Text(
+                                  '확인',
+                                  style: TextStyle(
+                                    color: Colors.white
+                                  ),
+                              ),
+                            )
+                          ]
+                        );
+                      }
+                  );
+              },
+              child: const Text(
+                "Why?",
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              ),
+            )
           ],
         ),
       ),

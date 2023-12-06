@@ -4,6 +4,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:todolist/screens/Login_screen.dart';
 import 'package:todolist/screens/complete_todo.dart';
 import 'package:todolist/screens/create_todo.dart';
+import 'package:todolist/screens/failTodo.dart';
 import 'package:todolist/screens/todoList.dart';
 import 'package:todolist/widgets/button.dart';
 
@@ -85,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       super.dispose();
       banner.dispose();
     }
+
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 51, 50, 50),
@@ -201,6 +203,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 10,
                 ),
+                Button(
+                    text: 'fail',
+                    move: () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            var begin = const Offset(0.0, 1.0);
+                            var end = Offset.zero;
+                            var curve = Curves.ease;
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                          const FailTodo(),
+                        ),
+                      );
+                    }
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
                 if(!isLogin)
                 Button(
                     text: 'Login',
@@ -227,6 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }
                 ),
+
                 const SizedBox(
                   height: 10,
                 ),
