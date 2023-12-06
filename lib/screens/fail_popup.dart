@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:todolist/widgets/textStr.dart';
 
 class FailPopUp extends StatefulWidget {
-  const FailPopUp({super.key});
+  const FailPopUp({
+    super.key,
+
+  });
+
+
 
   @override
   State<FailPopUp> createState() => _FailPopUpState();
@@ -16,6 +21,7 @@ class _FailPopUpState extends State<FailPopUp> {
       reason = str;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
