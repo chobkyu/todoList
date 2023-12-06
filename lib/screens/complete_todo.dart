@@ -112,7 +112,7 @@ class _CompleteTodoState extends State<CompleteTodo> {
                                   maxLines: 1,
                                   softWrap: false,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
