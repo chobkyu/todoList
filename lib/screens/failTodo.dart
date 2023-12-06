@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
+import 'complete_detail.dart';
+
 class FailTodo extends StatefulWidget {
   const FailTodo({super.key});
 
@@ -37,11 +39,32 @@ class _FailTodoState extends State<FailTodo> {
     }
   }
 
-  bool checkTime(DateTime date, DateTime date1){
+  bool checkTime(DateTime startDate, DateTime completeDate){
     //print(date1.isAfter(date));
-    return date1.isAfter(date);
+    return completeDate.isAfter(startDate);
   }
 
+  void detailPage(DocumentSnapshot snapshot) {
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionsBuilder:
+              (context, animation, secondaryAnimation, child) {
+            var begin = const Offset(0.0, 1.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end)
+                .chain(CurveTween(curve: curve));
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              CompleteDetail(snapshot: snapshot),
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +88,14 @@ class _FailTodoState extends State<FailTodo> {
 
                   Timestamp stampComplete = documentSnapshot['completeTime'];
                   DateTime dateComplete = stampComplete.toDate();
+
                   if(checkTime(dateCreate, dateComplete)){
                     return Card(
                         color:Colors.black,
                         child: ListTile(
+                          onTap: (){
+                            detailPage(documentSnapshot);
+                          },
                           title: Text(
                             documentSnapshot['todo'],
                             style: const TextStyle(
