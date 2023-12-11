@@ -5,6 +5,8 @@ import 'package:todolist/screens/fail_popup.dart';
 import 'package:todolist/widgets/containerStr.dart';
 import 'package:todolist/widgets/customAppBar.dart';
 
+import '../widgets/textStr.dart';
+
 class CompleteDetail extends StatefulWidget {
   const CompleteDetail({super.key,required this.snapshot});
 
@@ -17,6 +19,7 @@ class _CompleteDetailState extends State<CompleteDetail> {
   //auth
   final _authentication = FirebaseAuth.instance;
   User? loggedUser;
+  String reason = '';
 
   @override
   void initState() {
@@ -48,6 +51,33 @@ class _CompleteDetailState extends State<CompleteDetail> {
     DateTime dateComplete = completeTime.toDate();
 
     return dateComplete.isAfter(dateCreate);
+  }
+
+
+  void getReason(String str){
+    setState(() {
+      reason = str;
+    });
+  }
+
+  void saveReason(DocumentSnapshot? snapshot) async {
+    insertReason(snapshot);
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+  }
+
+  Future<void> insertReason(DocumentSnapshot? snapshot) async {
+    String? userId = loggedUser?.email;
+    String detail = snapshot?['detail'] + "\n\n\n늦은 이유 : "+reason;
+    return await FirebaseFirestore.instance.collection('todo').doc(userId).collection(userId!).doc(snapshot?.id).set(
+      {
+        'todo':snapshot?['todo'],
+        'detail':detail,
+        'dateTime':snapshot?['dateTime'],
+        'doIt':true,
+        'completeTime':snapshot?['completeTime']
+      }
+    );
   }
 
   @override
@@ -112,9 +142,47 @@ class _CompleteDetailState extends State<CompleteDetail> {
                         return AlertDialog(
 
                           backgroundColor: const Color.fromARGB(255, 51, 50, 50),
-                          content: const FailPopUp(),
+                          content: Container(
+                            color: const Color.fromARGB(255, 51, 50, 50),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Enter your reason',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                SizedBox(
+                                  width: 300,
+                                  child: TextStr(
+                                      fontSizeNum: 18,
+                                      text: 'enter!!',
+                                      getStr: getReason,
+                                      maxLine: 1
+                                  ),
+                                )
+
+                              ],
+                            ),
+                          ),
                           insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
                           actions:[
+                            TextButton(
+                              onPressed: () {
+                                saveReason(widget.snapshot);
+                              },
+                              child:const Text(
+                                '저장',
+                                style: TextStyle(
+                                    color: Colors.white
+                                ),
+                              ),
+                            ),
                             TextButton(
                               onPressed: () { Navigator.of(context).pop(); },
                               child:const Text(
@@ -123,7 +191,7 @@ class _CompleteDetailState extends State<CompleteDetail> {
                                     color: Colors.white
                                   ),
                               ),
-                            )
+                            ),
                           ]
                         );
                       }

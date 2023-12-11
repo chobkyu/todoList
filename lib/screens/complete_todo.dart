@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:todolist/screens/complete_detail.dart';
 
 import '../widgets/customAppBar.dart';
+import '../widgets/notice.dart';
 import 'detail_page.dart';
 
 class CompleteTodo extends StatefulWidget {
@@ -63,6 +64,11 @@ class _CompleteTodoState extends State<CompleteTodo> {
     );
   }
 
+  bool checkTime(DateTime startDate, DateTime completeDate){
+    //print(date1.isAfter(date));
+    return completeDate.isAfter(startDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +88,10 @@ class _CompleteTodoState extends State<CompleteTodo> {
                       final DocumentSnapshot documentSnapshot = streamSnapshot.data!.docs[index];
 
                       Timestamp stamp = documentSnapshot['dateTime'];
-                      DateTime date = stamp.toDate();
+                      DateTime date = stamp.toDate(); //생성된 시간
+
+                      Timestamp stampComplete = documentSnapshot['completeTime'];
+                      DateTime dateComplete = stampComplete.toDate();
 
                       return Card(
                         color: Colors.black,
@@ -90,12 +99,21 @@ class _CompleteTodoState extends State<CompleteTodo> {
                           onTap: (){
                             detailPage(documentSnapshot);
                           },
-                          title:Text(
-                            documentSnapshot['todo'],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900
-                            ),
+                          title:Row(
+                            children: [
+                              Text(
+                                documentSnapshot['todo'],
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              if(checkTime(date, dateComplete))
+                              const NoticeWidget(text:' fail.. ',color:Colors.deepPurple)
+                            ],
                           ),
                           subtitle: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
