@@ -63,6 +63,7 @@ class _CompleteDetailState extends State<CompleteDetail> {
   void saveReason(DocumentSnapshot? snapshot) async {
     insertReason(snapshot);
     Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   Future<void> insertReason(DocumentSnapshot? snapshot) async {
